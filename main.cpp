@@ -18,6 +18,7 @@ int main ()
         cout << Temp << ' ' << Humidity << endl;
         printf ("%d %d %d %d\n",Light,Power,Soil_Humidity,Oxygen);
         printf ("%s\n%s\n",!Detect_Rain() ? "下雨" : "没下雨", !Detect_Fire() ? "着火" : "没着火");
+        printf ("%f\n\n",Detect_light());
         delay(1000);
     }
 
