@@ -6,16 +6,16 @@ allhead = $(wildcard *.h)
 abckfile = $(wildcard *~)
 
 all:
-	g++ -I ./include/ $(cppsrcfiles) $(csrcfiles) -o app -lwiringPi
+	g++ -I ./include/ $(cppsrcfiles) $(csrcfiles)-o app -lwiringPi
 
 up:
 	#cp $(allhead) include/
 	#rm $(allhead)
-	mv $(csrcfiles) $(cppsrcfiles)
+	mv $(cppsrcfiles) $(csrcfiles)
 
 clear:
-	#rm $(cobjfiles) $(cppobjfiles)
-	#rm $(allhead)
+	rm $(cobjfiles) $(cppobjfiles)
+	rm $(allhead)
 	rm $(abckfile)
 
 allcpp:
