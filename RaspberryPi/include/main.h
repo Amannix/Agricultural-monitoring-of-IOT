@@ -9,6 +9,12 @@
 #define _A2 BASE+2
 #define _A3 BASE+3
 
+struct SensorNode{
+    uint16_t Dioxide,TVOC,Oxygen,Power,Soil_Humidity;
+    double Temp,Humidity,Light;
+    bool Rain,Fire;
+};
+
 bool Detect_Rain();
 
 bool Create_Serv_Clint();

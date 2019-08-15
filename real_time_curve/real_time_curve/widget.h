@@ -23,6 +23,12 @@ class Widget : public QWidget
     Q_OBJECT
 
 public:
+    struct SensorNode
+    {
+        uint16_t Dioxide,TVOC,Oxygen,Power,Soil_Humidity;
+        double Temp,Humidity,Light;
+        bool Rain,Fire;
+    };
     explicit Widget(QWidget *parent = 0);
     ~Widget();
     void addLiner(QString name,QSplineSeries *splineSeries);
@@ -53,6 +59,6 @@ private:
     QDateTimeAxis *axisx;
     QTcpServer *serv;
     QTcpSocket *clnt;
-
+    SensorNode *Data;
 };
 #endif // WIDGET_H

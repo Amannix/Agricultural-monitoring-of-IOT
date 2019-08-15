@@ -105,8 +105,9 @@ void Widget::createSock()
         connect(clnt, &QTcpSocket::readyRead, this, [=]{
             qDebug() << "newdata:";
             QByteArray data = clnt->readAll();
-            QString str(data);
-            qDebug() << str << endl;
+            char* tt = data.data();
+            strncpy((char*)Data,tt,sizeof Data);
+            qDebug() << Data->Dioxide << endl;
         });
     });
 }

@@ -10,6 +10,8 @@ struct sockaddr_in serv_addr;
 const int Rain_Sig_Pin = 0;
 const int Fire_Sig_Pin = 2;
 
+SensorNode Data;
+
 using namespace std;
 
 char IP[20];
@@ -28,16 +30,16 @@ int main (int args,char** argv)
         return -1;
     }
     while (1){
-        Detect_SGP30(&Dioxide,&TVOC);
-        Detect_DHT22(&Temp,&Humidity);
+        Detect_SGP30(&Data.Dioxide,&Data.TVOC);
+        Detect_DHT22(&Data.Temp,&Data.Humidity);
         Detect_PCF8591();
-        Rain = Detect_Rain();
-        Fire = Detect_Fire();
+        Data.Rain = Detect_Rain();
+        Data.Fire = Detect_Fire();
 
-        cout << Dioxide << ' ' << TVOC << endl;
-        cout << Temp << ' ' << Humidity << endl;
-        printf ("%lf %d %d %d\n",Light,Power,Soil_Humidity,Oxygen);
-        printf ("%s\n%s\n",!Detect_Rain() ? "下雨" : "没下雨", !Detect_Fire() ? "着火" : "没着火");
+        cout << Data.Dioxide << ' ' << Data.TVOC << endl;
+        cout << Data.Temp << ' ' << Data.Humidity << endl;
+        printf ("%lf %d %d %d\n",Data.Light,Data.Power,Data.Soil_Humidity,Data.Oxygen);
+        printf ("%s\n%s\n",Detect_Rain() ? "下雨" : "没下雨", Detect_Fire() ? "着火" : "没着火");
         Send_Message();
         delay(1000);
     }
@@ -65,41 +67,18 @@ bool Create_Serv_Clint()
 
 bool Send_Message()
 {
-    stringstream ss;
-    ss << Rain ? "0" : "1";
-    ss << "|";
-    ss << Fire ? "0" : "1";
-    ss << "|";
-    ss << Dioxide;
-    ss << "|";
-    ss << TVOC;
-    ss << "|";
-    ss << (int)(Temp*10);
-    ss << "|";
-    ss << (int)(Humidity*10);
-    ss << "|";
-    ss << Soil_Humidity;
-    ss << "|";
-    ss << Power;
-    ss << "|";
-    ss << Oxygen;
-    ss << "|";
-    ss << (int)(Light*100);
-    ss << "#\n";
-    //cout << ss.str() << endl;
-    const char* tt = ss.str().c_str();
-    write(sock, ss.str().c_str(), strlen(ss.str().c_str()));
+    write(sock, (char*)(&Data), sizeof Data);
 }
 
 bool Detect_PCF8591()
 {
-    Light = Detect_light();
+    Data.Light = Detect_light();
     delay(10);
-    Power = analogRead(_A1);
+    Data.Power = analogRead(_A1);
     delay(10);
-    Soil_Humidity = analogRead(_A2);
+    Data.Soil_Humidity = analogRead(_A2);
     delay(10);
-    Oxygen = analogRead(_A3);
+    Data.Oxygen = analogRead(_A3);
     delay(10);
 }
 
@@ -120,10 +99,12 @@ bool System_Init()
 
 bool Detect_Rain()
 {
-    return digitalRead(Rain_Sig_Pin);
+    Data.Rain = !digitalRead(Rain_Sig_Pin);
+    return Data.Rain;
 }
 
 bool Detect_Fire()
 {
-    return digitalRead(Fire_Sig_Pin);
+    Data.Fire = !digitalRead(Fire_Sig_Pin);
+    return Data.Fire;
 }
